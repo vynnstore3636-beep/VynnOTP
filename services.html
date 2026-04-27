@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Daftar Layanan - VynnOTP</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+
+        body { background-color: #0f172a; color: white; }
+
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+
+    </style>
+
+</head>
+
+<body class="p-6">
+
+    <div class="max-w-4xl mx-auto">
+
+        <a href="index.html" class="text-blue-400 mb-6 inline-block">← Kembali</a>
+
+        <h1 class="text-3xl font-bold mb-6">Layanan RuangOTP (ID: 13)</h1>
+
+        
+
+        <div class="glass p-6 rounded-2xl">
+
+            <div id="loading" class="text-center py-10 text-blue-400">
+
+                <p class="animate-pulse">Mengambil data negara...</p>
+
+            </div>
+
+            <div class="overflow-x-auto">
+
+                <table class="w-full text-left">
+
+                    <thead>
+
+                        <tr class="border-b border-white/10">
+
+                            <th class="p-3">Negara (Prefix)</th>
+
+                            <th class="p-3">Sisa Stok</th>
+
+                            <th class="p-3">Harga / Rate</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="service-list"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        // API Key kamu sudah dimasukkan di sini
+
+        const apiKey = '0c24b954-07ed-4a4f-b285-1b10b5ccfef2'; 
+
+        async function getServices() {
+
+            const list = document.getElementById('service-list');
+
+            const loading = document.getElementById('loading');
+
+            try {
+
+                const response = await fetch(`https://api.ruangotp.site/api/v1/countries/list?api_key=${apiKey}&service_id=13`);
+
+                const res = await response.json();
+
+                if (res.success === true) {
+
+                    loading.style.display = 'none';
+
+                    
+
+                    res.data.forEach(item => {
+
+                        const row = `
+
+                            <tr class="border-b border-white/5 hover:bg-white/5 transition text-sm">
+
+                                <td class="p-4 font-medium">${item.name} (${item.prefix})</td>
+
+                                <td class="p-4 text-gray-400">${item.stock_total} Stok</td>
+
+                                <td class="p-4 text-green-400 font-bold">Rp ${item.rate}</td>
+
+                            </tr>
+
+                        `;
+
+                        list.innerHTML += row;
+
+                    });
+
+                } else {
+
+                    loading.innerHTML = `<span class="text-red-400 italic">Gagal: ${res.error.message || "IP belum di-whitelist"}</span>`;
+
+                }
+
+            } catch (error) {
+
+                loading.innerText = "Koneksi Error. Pastikan Whitelist IP sudah benar.";
+
+            }
+
+        }
+
+        
+
+        getServices();
+
+    </script>
+
+</body>
+
+</html>
